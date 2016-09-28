@@ -1,0 +1,8 @@
+[template]
+src = "server.properties.tmpl"
+dest = "/kafka/config/server.properties"
+keys = [
+  "/self/container/service_index",
+  "/self/stack/services/zookeeper/containers",
+]
+reload_cmd = "pkill java"
