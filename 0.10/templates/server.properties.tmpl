@@ -115,4 +115,8 @@ zookeeper.connect={{range $i, $zk := ls "/self/stack/services/zookeeper/containe
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=6000
 
+############################# Defaults overrides ####################
 
+# Enables delete topic. Delete topic through the admin tool will have no
+# effect if this config is turned off
+delete.topic.enable=true
