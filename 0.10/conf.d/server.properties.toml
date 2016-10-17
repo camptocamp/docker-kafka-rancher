@@ -1,9 +1,9 @@
 [template]
-src = "server.properties.tmpl"
-dest = "/kafka/config/server.properties"
+src = "create-server.properties.sh.tmpl"
+dest = "/create-server.properties.sh"
 keys = [
   "/self/container/service_index",
   "/self/host/agent_ip",
   "/self/stack/services/zookeeper/containers",
 ]
-reload_cmd = "pkill java"
+reload_cmd = "sh /create-server.properties.sh && pkill java"
