@@ -1,4 +1,4 @@
-FROM java:8
+FROM openjdk:8
 
 ENV CONFD_VERSION=0.12.0-alpha3 \
   KAFKA_USER=kafka \
