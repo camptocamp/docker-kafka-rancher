@@ -46,8 +46,10 @@ COPY ./kafka.run /etc/service/kafka/run
 COPY ./conf.d /etc/confd/conf.d
 COPY ./templates /etc/confd/templates
 
+COPY ./docker-entrypoint.sh /
+
 EXPOSE 9092
 
 VOLUME [ "/tmp/kafka-logs" ]
 
-ENTRYPOINT [ "runsvdir", "-P", "/etc/service/" ]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
