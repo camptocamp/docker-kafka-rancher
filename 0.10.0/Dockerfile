@@ -48,4 +48,6 @@ COPY ./templates /etc/confd/templates
 
 EXPOSE 9092
 
+VOLUME [ "/tmp/kafka-logs" ]
+
 ENTRYPOINT [ "runsvdir", "-P", "/etc/service/" ]
