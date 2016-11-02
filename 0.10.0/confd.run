@@ -1,5 +1,3 @@
 #!/bin/sh
 
-confd -onetime -backend rancher -prefix /2015-12-19
-
 exec confd -interval 10 -backend rancher -prefix /2015-12-19

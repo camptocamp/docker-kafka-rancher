@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Create kafka initial configuration
-gosu kafka confd -onetime -sync-only -backend rancher -prefix /2015-12-19
+confd -onetime -backend rancher -prefix /2015-12-19
 
 echo
 echo "== /kafka/config/server.properties =="
