@@ -2,7 +2,6 @@
 src = "create-server.properties.sh.tmpl"
 dest = "/create-server.properties.sh"
 keys = [
-  "/self/container/primary_ip",
   "/self/container/service_index",
   "/self/host/agent_ip",
   "/self/stack/services/zookeeper/containers",
