@@ -3,7 +3,8 @@ FROM openjdk:8
 ENV CONFD_VERSION=0.12.0-alpha3 \
   KAFKA_USER=kafka \
   KAFKA_VERSION=0.10.1.0 \
-  SCALA_VERSION=2.11
+  SCALA_VERSION=2.11 \
+  DEBIAN_FRONTEND=noninteractive
 
 # Add a user
 RUN adduser --system "$KAFKA_USER"
@@ -12,6 +13,7 @@ RUN adduser --system "$KAFKA_USER"
 RUN apt-get update \
   && apt-get install -y --no-install-suggests --no-install-recommends \
     runit \
+  && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
 # Down confd
@@ -33,11 +35,12 @@ RUN set -x \
     && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
     && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc" \
     && export GNUPGHOME="$(mktemp -d)" \
-    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
     && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
     && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./confd.run /etc/service/confd/run
