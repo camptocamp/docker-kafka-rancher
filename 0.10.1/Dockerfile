@@ -7,7 +7,7 @@ ENV CONFD_VERSION=0.12.0-alpha3 \
   DEBIAN_FRONTEND=noninteractive
 
 # Add a user
-RUN adduser --system "$KAFKA_USER"
+RUN adduser --system --shell /bin/bash --disabled-password "$KAFKA_USER"
 
 # Install runit
 RUN apt-get update \
@@ -43,16 +43,36 @@ RUN set -x \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install sshd & misc utilities
+# Use "/usr/local/sbin/configure-sshd.sh" as entrypoint if you need a shell
+# access to run /kafka/bin/kafka-console-{consumer,producer}.sh and friends.
+RUN apt-get update \
+ && apt-get -y --no-install-recommends --no-install-suggests install \
+    openssh-server \
+    less \
+    bash-completion \
+    screen \
+    tmux \
+    netcat-openbsd \
+    iputils-ping \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN rm -f /etc/ssh/ssh_host*
+RUN mkdir -p /var/run/sshd "/home/${KAFKA_USER}/.ssh"
+
 COPY ./confd.run /etc/service/confd/run
 COPY ./kafka.run /etc/service/kafka/run
 
 COPY ./conf.d /etc/confd/conf.d
 COPY ./templates /etc/confd/templates
 
-COPY ./docker-entrypoint.sh /
+COPY ./docker-entrypoint-kafka.sh /
+COPY ./docker-entrypoint-sshd.sh /
 
 EXPOSE 9092
 
 VOLUME [ "/tmp/kafka-logs" ]
 
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/docker-entrypoint-kafka.sh" ]
+
