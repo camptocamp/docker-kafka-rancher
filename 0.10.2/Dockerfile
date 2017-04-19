@@ -27,6 +27,8 @@ RUN curl -L -o /kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz http://www.apache.or
   && ln -s kafka_${SCALA_VERSION}-${KAFKA_VERSION} kafka \
   && rm kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
 
+COPY log4j.properties /kafka/config/log4j.properties
+
 # Install Gosu
 ENV GOSU_VERSION 1.9
 RUN set -x \
