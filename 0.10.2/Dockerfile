@@ -9,13 +9,6 @@ ENV CONFD_VERSION=0.12.0-alpha3 \
 # Add a user
 RUN adduser --system --shell /bin/bash --disabled-password "$KAFKA_USER"
 
-# Install runit
-RUN apt-get update \
-  && apt-get install -y --no-install-suggests --no-install-recommends \
-    runit \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
 # Down confd
 RUN curl -L -o /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 \
   && chmod +x /usr/local/bin/confd
@@ -62,9 +55,6 @@ RUN apt-get update \
 
 RUN rm -f /etc/ssh/ssh_host*
 RUN mkdir -p /var/run/sshd "/home/${KAFKA_USER}/.ssh"
-
-COPY ./confd.run /etc/service/confd/run
-COPY ./kafka.run /etc/service/kafka/run
 
 COPY ./conf.d /etc/confd/conf.d
 COPY ./templates /etc/confd/templates
