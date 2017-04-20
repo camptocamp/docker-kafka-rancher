@@ -21,7 +21,8 @@ RUN sed -i -e 's@^\(broker.id=.*\)$@#\1@' \
   -e 's@zookeeper.connect=.*@zookeeper.connect=zookeeper:2181@' \
   /kafka/config/server.properties
 
-COPY log4j.properties /kafka/config/log4j.properties
+# Configure log4j
+RUN sed -i -E 's@^(log4j\.logger\..*) .+Appender$@\1 stdout@' /kafka/config/log4j.properties
 
 # Install Gosu
 ENV GOSU_VERSION 1.9
