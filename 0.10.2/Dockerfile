@@ -9,16 +9,17 @@ ENV CONFD_VERSION=0.12.0-alpha3 \
 # Add a user
 RUN adduser --system --shell /bin/bash --disabled-password "$KAFKA_USER"
 
-# Down confd
-RUN curl -L -o /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 \
-  && chmod +x /usr/local/bin/confd
-
 # Download Apache Kafka, untar and cleanup
 RUN curl -L -o /kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz http://www.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
   && tar -xzf kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
   && chown kafka -R kafka_${SCALA_VERSION}-${KAFKA_VERSION} \
   && ln -s kafka_${SCALA_VERSION}-${KAFKA_VERSION} kafka \
   && rm kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
+
+# Configure Kafka
+RUN sed -i -e 's@^\(broker.id=.*\)$@#\1@' \
+  -e 's@zookeeper.connect=.*@zookeeper.connect=zookeeper:2181@' \
+  /kafka/config/server.properties
 
 COPY log4j.properties /kafka/config/log4j.properties
 
@@ -56,9 +57,6 @@ RUN apt-get update \
 RUN rm -f /etc/ssh/ssh_host*
 RUN mkdir -p /var/run/sshd "/home/${KAFKA_USER}/.ssh"
 
-COPY ./conf.d /etc/confd/conf.d
-COPY ./templates /etc/confd/templates
-
 COPY ./docker-entrypoint-kafka.sh /
 COPY ./docker-entrypoint-sshd.sh /
 
@@ -67,4 +65,3 @@ EXPOSE 9092
 VOLUME [ "/tmp/kafka-logs" ]
 
 ENTRYPOINT [ "/docker-entrypoint-kafka.sh" ]
-

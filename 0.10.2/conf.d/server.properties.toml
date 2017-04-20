@@ -1,6 +1,0 @@
-[template]
-src = "create-server.properties.sh.tmpl"
-dest = "/create-server.properties.sh"
-keys = [
-]
-reload_cmd = "sh /create-server.properties.sh && pkill java"
